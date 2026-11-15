@@ -6,6 +6,8 @@ SKY CRED is a lightweight weather app that turns live weather into a simple, act
 
 Built with HTML, CSS and vanilla JavaScript. No frameworks, no build step, no mock data — every value in the UI comes from the live WeatherAPI response.
 
+> **Live app:** [credsky-dusky.vercel.app](https://credsky-dusky.vercel.app) · **Repo:** [suganmaran/Credsky](https://github.com/suganmaran/Credsky) — every push to `main` deploys automatically via the Vercel GitHub App.
+
 ---
 
 ## Contents
