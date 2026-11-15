@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#070b18" />
+  <title>SKY CRED — Check the sky's credit score before you step out</title>
+  <meta
+    name="description"
+    content="SKY CRED turns live weather into a simple, actionable reading. Search any city, see current conditions and find out whether it's a good time to step outside."
+  />
+  <link
+    rel="icon"
+    href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%238b7bff'/%3E%3Cstop offset='1' stop-color='%236ee7ff'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='32' height='32' rx='9' fill='url(%23g)'/%3E%3Cpath d='M9 20.5a3.6 3.6 0 0 1 .5-7.15A5 5 0 0 1 19 12.6a3.2 3.2 0 0 1 .4 6.35' fill='none' stroke='%23070b18' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M16 17.5v7M13 21l3 3 3-3' fill='none' stroke='%23070b18' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"
+  />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="preconnect" href="https://cdn.weatherapi.com" crossorigin />
+  <link rel="stylesheet" href="./css/styles.css" />
+</head>
+<body>
+  <!-- Ambient background -->
+  <div class="ambient" aria-hidden="true">
+    <span class="orb orb-a"></span>
+    <span class="orb orb-b"></span>
+    <span class="orb orb-c"></span>
+    <span class="starfield"></span>
+  </div>
+
+  <!-- Icon sprite -->
+  <svg class="sprite" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
+    <symbol id="i-search" viewBox="0 0 24 24">
+      <circle cx="11" cy="11" r="7" /><path d="m20 20-3.6-3.6" />
+    </symbol>
+    <symbol id="i-cloud" viewBox="0 0 24 24">
+      <path d="M7 18a4.5 4.5 0 0 1-.6-8.96A5.8 5.8 0 0 1 17.6 10.5A3.8 3.8 0 0 1 17 18Z" />
+    </symbol>
+    <symbol id="i-droplet" viewBox="0 0 24 24">
+      <path d="M12 3s5.5 6.1 5.5 10a5.5 5.5 0 0 1-11 0C6.5 9.1 12 3 12 3Z" />
+    </symbol>
+    <symbol id="i-wind" viewBox="0 0 24 24">
+      <path d="M3 8h10.5a2.5 2.5 0 1 0-2.4-3.2M3 12h15a2.5 2.5 0 1 1-2.4 3.2M3 16h8.5a2.5 2.5 0 1 1-2.4 3.2" />
+    </symbol>
+    <symbol id="i-sun" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="4.2" />
+      <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" />
+    </symbol>
+    <symbol id="i-eye" viewBox="0 0 24 24">
+      <path d="M2.5 12S6 5.8 12 5.8 21.5 12 21.5 12 18 18.2 12 18.2 2.5 12 2.5 12Z" />
+      <circle cx="12" cy="12" r="2.8" />
+    </symbol>
+    <symbol id="i-gauge" viewBox="0 0 24 24">
+      <path d="M4 18a8.5 8.5 0 1 1 16 0" /><path d="m12 14 4-4" /><circle cx="12" cy="15" r="1.4" />
+    </symbol>
+    <symbol id="i-thermo" viewBox="0 0 24 24">
+      <path d="M14 14.8V5a2 2 0 1 0-4 0v9.8a4 4 0 1 0 4 0Z" /><path d="M12 9v6.5" />
+    </symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="8.5" /><path d="M12 7.5V12l3 2" />
+    </symbol>
+    <symbol id="i-copy" viewBox="0 0 24 24">
+      <rect x="9" y="9" width="11" height="11" rx="2.5" /><path d="M15 6.5V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h.5" />
+    </symbol>
+    <symbol id="i-check" viewBox="0 0 24 24">
+      <path d="m4.5 12.5 5 5 10-11" />
+    </symbol>
+    <symbol id="i-alert" viewBox="0 0 24 24">
+      <path d="M12 3.8 21 20H3Z" /><path d="M12 9.5v4.5" /><circle cx="12" cy="17" r=".9" fill="currentColor" stroke="none" />
+    </symbol>
+    <symbol id="i-refresh" viewBox="0 0 24 24">
+      <path d="M20 12a8 8 0 1 1-2.6-5.9" /><path d="M20 4.5V11h-6.3" />
+    </symbol>
+    <symbol id="i-location" viewBox="0 0 24 24">
+      <path d="M12 21s7-5.6 7-11a7 7 0 1 0-14 0c0 5.4 7 11 7 11Z" /><circle cx="12" cy="10" r="2.6" />
+    </symbol>
+    <symbol id="i-spark" viewBox="0 0 24 24">
+      <path d="M12 3.5 13.7 9l5.5 1.7-5.5 1.7L12 18l-1.7-5.6L4.8 10.7 10.3 9Z" />
+      <path d="M18.5 16.5v3M17 18h3" />
+    </symbol>
+    <symbol id="i-close" viewBox="0 0 24 24">
+      <path d="m6 6 12 12M18 6 6 18" />
+    </symbol>
+  </svg>
+
+  <div class="page">
+    <header class="topbar">
+      <a class="brand" href="./" aria-label="SKY CRED home">
+        <span class="brand-mark" aria-hidden="true">
+          <svg class="ico"><use href="#i-cloud" /></svg>
+        </span>
+        <span class="brand-text">
+          <span class="brand-name">SKY<span>CRED</span></span>
+          <span class="brand-tag">Check the sky's credit score before you step out.</span>
+        </span>
+      </a>
+      <p class="topbar-meta">
+        <span class="live-dot" aria-hidden="true"></span>
+        <span>Live data</span>
+      </p>
+    </header>
+
+    <main>
+      <h1 class="sr-only">SKY CRED — live weather and a plain-English read on any city</h1>
+
+      <!-- Search -->
+      <section class="search-panel" aria-label="Search for a city">
+        <form id="search-form" class="search-form" novalidate>
+          <div class="input-wrap">
+            <svg class="ico input-icon" aria-hidden="true"><use href="#i-search" /></svg>
+            <label class="sr-only" for="city-input">City name</label>
+            <input
+              id="city-input"
+              name="city"
+              type="search"
+              class="city-input"
+              placeholder="Search any city — e.g. Mumbai"
+              autocomplete="off"
+              autocapitalize="words"
+              spellcheck="false"
+              maxlength="80"
+              enterkeyhint="search"
+              aria-describedby="input-hint input-error"
+            />
+            <button type="button" id="clear-btn" class="clear-btn" aria-label="Clear city name" hidden>
+              <svg class="ico" aria-hidden="true"><use href="#i-close" /></svg>
+            </button>
+          </div>
+          <button type="submit" id="search-btn" class="btn btn-primary">
+            <span class="btn-label">Check sky</span>
+            <span class="spinner" aria-hidden="true"></span>
+          </button>
+        </form>
+        <p id="input-hint" class="field-hint">Press Enter to search. Live data from WeatherAPI.</p>
+        <p id="input-error" class="field-error" role="alert" hidden></p>
+
+        <div class="popular">
+          <span class="popular-label" id="popular-label">Popular</span>
+          <div id="popular-cities" class="chips" role="group" aria-labelledby="popular-label"></div>
+        </div>
+      </section>
+
+      <!-- Error / status banner -->
+      <div id="banner" class="banner" role="alert" aria-live="assertive" hidden>
+        <span class="banner-icon" aria-hidden="true">
+          <svg class="ico"><use href="#i-alert" /></svg>
+        </span>
+        <div class="banner-copy">
+          <strong id="banner-title">Something went wrong</strong>
+          <p id="banner-message"></p>
+        </div>
+        <button type="button" id="retry-btn" class="btn btn-ghost btn-sm">
+          <svg class="ico" aria-hidden="true"><use href="#i-refresh" /></svg>
+          Retry
+        </button>
+      </div>
+
+      <!-- Weather -->
+      <section id="weather" class="weather" aria-busy="true">
+        <div class="sr-only" role="status" aria-live="polite" id="live-status"></div>
+
+        <!-- Skeleton (first load) -->
+        <div id="skeleton" class="skeleton" aria-hidden="true">
+          <div class="sk-hero">
+            <div class="sk-block sk-eyebrow"></div>
+            <div class="sk-block sk-city"></div>
+            <div class="sk-block sk-meta"></div>
+            <div class="sk-block sk-temp"></div>
+            <div class="sk-block sk-cond"></div>
+          </div>
+          <div class="sk-cred">
+            <div class="sk-ring"></div>
+            <div class="sk-block sk-title"></div>
+            <div class="sk-block sk-line"></div>
+            <div class="sk-block sk-line short"></div>
+          </div>
+          <div class="sk-metrics">
+            <div class="sk-metric"></div>
+            <div class="sk-metric"></div>
+            <div class="sk-metric"></div>
+          </div>
+        </div>
+
+        <!-- Empty / error state -->
+        <div id="empty-state" class="empty-state" hidden>
+          <span class="empty-icon" aria-hidden="true">
+            <svg class="ico"><use href="#i-cloud" /></svg>
+          </span>
+          <h2 id="empty-title">No sky reading yet</h2>
+          <p id="empty-text">Search for a city to check its sky cred.</p>
+          <button type="button" id="empty-retry" class="btn btn-primary btn-sm" hidden>
+            <svg class="ico" aria-hidden="true"><use href="#i-refresh" /></svg>
+            Try again
+          </button>
+        </div>
+
+        <div id="content" class="content" hidden>
+          <article class="card hero" aria-labelledby="city-name">
+            <div class="hero-main">
+              <div class="hero-head">
+                <p class="eyebrow">
+                  <svg class="ico" aria-hidden="true"><use href="#i-location" /></svg>
+                  Current conditions
+                </p>
+                <span id="updating-badge" class="updating" hidden>
+                  <span class="pulse" aria-hidden="true"></span>Updating
+                </span>
+              </div>
+
+              <h2 id="city-name" class="city">—</h2>
+              <p class="city-meta">
+                <span id="city-region">—</span>
+                <span class="dot" aria-hidden="true">•</span>
+                <span id="city-time">
+                  <svg class="ico ico-inline" aria-hidden="true"><use href="#i-clock" /></svg>
+                  <span id="city-time-text">—</span>
+                </span>
+              </p>
+
+              <div class="temp-row">
+                <p class="temp">
+                  <span id="temp-value">—</span><span class="deg" aria-hidden="true">°</span>
+                  <span class="sr-only" id="temp-unit">degrees Celsius</span>
+                </p>
+                <img id="condition-icon" class="cond-icon" width="104" height="104" alt="" />
+              </div>
+
+              <p class="cond-text">
+                <span id="condition-text">—</span>
+                <span class="sep" aria-hidden="true">·</span>
+                <span class="feels">Feels like <span id="feels-like">—</span></span>
+              </p>
+            </div>
+
+            <aside class="cred" aria-labelledby="personality-title">
+              <div class="cred-head">
+                <span class="cred-label">
+                  <svg class="ico" aria-hidden="true"><use href="#i-spark" /></svg>
+                  Sky cred
+                </span>
+                <span id="cred-grade" class="grade" data-tone="neutral">—</span>
+              </div>
+
+              <div class="ring" id="cred-ring" style="--p: 0">
+                <div class="ring-inner">
+                  <span id="cred-score">—</span>
+                  <small>/ 100</small>
+                </div>
+              </div>
+
+              <div class="cred-copy">
+                <h3 id="personality-title" class="personality">—</h3>
+                <p id="personality-desc" class="personality-desc">—</p>
+              </div>
+
+              <p class="cred-note">App-generated reading · not a real credit score</p>
+            </aside>
+          </article>
+
+          <div class="metrics">
+            <article class="card metric">
+              <span class="metric-icon tint-blue" aria-hidden="true">
+                <svg class="ico"><use href="#i-droplet" /></svg>
+              </span>
+              <div class="metric-body">
+                <p class="metric-label">Humidity</p>
+                <p class="metric-value"><span id="metric-humidity">—</span><span class="unit">%</span></p>
+                <p class="metric-note" id="humidity-note">—</p>
+              </div>
+            </article>
+
+            <article class="card metric">
+              <span class="metric-icon tint-teal" aria-hidden="true">
+                <svg class="ico"><use href="#i-wind" /></svg>
+              </span>
+              <div class="metric-body">
+                <p class="metric-label">Wind</p>
+                <p class="metric-value"><span id="metric-wind">—</span><span class="unit">km/h</span></p>
+                <p class="metric-note" id="wind-note">—</p>
+              </div>
+            </article>
+
+            <article class="card metric">
+              <span class="metric-icon tint-gold" aria-hidden="true">
+                <svg class="ico"><use href="#i-sun" /></svg>
+              </span>
+              <div class="metric-body">
+                <p class="metric-label">UV index</p>
+                <p class="metric-value"><span id="metric-uv">—</span><span class="unit">index</span></p>
+                <p class="metric-note" id="uv-note">—</p>
+              </div>
+            </article>
+          </div>
+
+          <section class="card details" aria-labelledby="details-title">
+            <h2 id="details-title" class="section-title">More detail</h2>
+            <dl class="detail-grid">
+              <div class="detail">
+                <dt><svg class="ico" aria-hidden="true"><use href="#i-cloud" /></svg>Cloud cover</dt>
+                <dd id="detail-cloud">—</dd>
+              </div>
+              <div class="detail">
+                <dt><svg class="ico" aria-hidden="true"><use href="#i-eye" /></svg>Visibility</dt>
+                <dd id="detail-visibility">—</dd>
+              </div>
+              <div class="detail">
+                <dt><svg class="ico" aria-hidden="true"><use href="#i-gauge" /></svg>Pressure</dt>
+                <dd id="detail-pressure">—</dd>
+              </div>
+              <div class="detail">
+                <dt><svg class="ico" aria-hidden="true"><use href="#i-wind" /></svg>Wind speed</dt>
+                <dd id="detail-wind">—</dd>
+              </div>
+              <div class="detail">
+                <dt><svg class="ico" aria-hidden="true"><use href="#i-thermo" /></svg>In Fahrenheit</dt>
+                <dd id="detail-tempf">—</dd>
+              </div>
+              <div class="detail">
+                <dt><svg class="ico" aria-hidden="true"><use href="#i-clock" /></svg>Last updated</dt>
+                <dd id="detail-updated">—</dd>
+              </div>
+            </dl>
+          </section>
+        </div>
+      </section>
+
+      <!-- API response viewer -->
+      <section class="card json-card" aria-labelledby="json-title">
+        <div class="json-head">
+          <div class="json-heading">
+            <h2 id="json-title" class="section-title">API response</h2>
+            <p id="json-meta" class="section-sub">Waiting for the first response…</p>
+          </div>
+          <div class="json-actions">
+            <div class="tabs" role="tablist" aria-label="JSON representation">
+              <button
+                type="button"
+                role="tab"
+                id="tab-formatted"
+                class="tab is-active"
+                aria-selected="true"
+                aria-controls="json-view"
+                data-view="formatted"
+              >
+                Formatted
+              </button>
+              <button
+                type="button"
+                role="tab"
+                id="tab-raw"
+                class="tab"
+                aria-selected="false"
+                aria-controls="json-view"
+                data-view="raw"
+              >
+                Raw
+              </button>
+            </div>
+            <button type="button" id="copy-btn" class="btn btn-ghost btn-sm">
+              <svg class="ico" aria-hidden="true"><use href="#i-copy" /></svg>
+              <span id="copy-label">Copy</span>
+            </button>
+          </div>
+        </div>
+        <pre id="json-view" class="json-view" tabindex="0" role="tabpanel" aria-labelledby="tab-formatted">{
+  "message": "No response yet. Search for a city to see the live payload."
+}</pre>
+        <p class="copy-status sr-only" role="status" aria-live="polite" id="copy-status"></p>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <p>Weather data by <a href="https://www.weatherapi.com/" target="_blank" rel="noopener noreferrer">WeatherAPI.com</a>.</p>
+      <p>SKY CRED is a playful interpretation of the weather, not a real credit score.</p>
+    </footer>
+  </div>
+
+  <script type="module" src="./js/app.js"></script>
+</body>
+</html>

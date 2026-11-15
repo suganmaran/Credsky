@@ -1,0 +1,14 @@
+# Local secrets — never commit real keys
+.env
+.env.local
+
+# Vercel
+.vercel
+
+# Dependencies / tooling
+node_modules/
+npm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
